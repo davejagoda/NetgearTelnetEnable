@@ -12,6 +12,8 @@
         Netgear Router - Console Telnet Enable Utility 
         Release 0.1 : 25th June 2006
         Copyright (C) 2006, yoshac @ member.fsf.org
+        Release 0.2 : 20th August 2012
+	dj bug fix on OS X
 
         This program is free software; you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -149,7 +151,7 @@ int fill_payload(int argc, char * input[])
   // NOTE: so why concatenate outside of the .signature boundary again
   //       using strcat? deleting this line would keep the payload the same and not
   //       cause some funky abort() or segmentation fault on newer gcc's
-  // dj: this was attempting to but back the first byte of the mac address
+  // dj: this was attempting to put back the first byte of the MAC address
   // dj: which was getting stomped by the strcpy of the MD5_key above
   // dj: a better fix is to use strncpy to avoid the stomping in the 1st place
   //  strcat(payload.signature, input[2]);
