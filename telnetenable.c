@@ -60,7 +60,7 @@ struct PAYLOAD
 
 void usage(char * progname)
 {
-  printf("\nVersion:0.1, 2006/06/22\n");
+  printf("\nVersion:0.2, 2012/08/20\n");
   printf("Usage:\n%s <host ip> <host mac> <user name> <password>\n\n",progname);
   exit(-1);
 }
@@ -145,11 +145,14 @@ int fill_payload(int argc, char * input[])
   MD5Update(&MD,payload.mac,0x70);
   MD5Final(MD5_key,&MD);
 
-  strcpy(payload.signature, MD5_key);
+  strncpy(payload.signature, MD5_key, sizeof(payload.signature));
   // NOTE: so why concatenate outside of the .signature boundary again
   //       using strcat? deleting this line would keep the payload the same and not
   //       cause some funky abort() or segmentation fault on newer gcc's
-  strcat(payload.signature, input[2]);
+  // dj: this was attempting to but back the first byte of the mac address
+  // dj: which was getting stomped by the strcpy of the MD5_key above
+  // dj: a better fix is to use strncpy to avoid the stomping in the 1st place
+  //  strcat(payload.signature, input[2]);
 
   if (argc==5)
     strcat(secret_key,input[4]);
