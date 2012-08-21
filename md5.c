@@ -15,6 +15,7 @@
  * will fill a supplied 16-byte array with the digest.
  */
 
+#include <string.h>
 #include "md5.h"
 
 static void MD5Transform(unsigned int buf[4], unsigned int const in[16]);
