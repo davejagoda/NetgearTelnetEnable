@@ -1,15 +1,15 @@
 /*
   This program is a re-implementation of the telnet console enabler utility
   for use with Netgear wireless routers.
-  
+
   The original Netgear Windows binary version of this tool is available here:
   http://www.netgear.co.kr/Support/Product/FileInfo.asp?IDXNo=155
-  
+
   Per DMCA 17 U.S.C. §1201(f)(1)-(2), the original Netgear executable was
   reverse engineered to enable interoperability with other operating systems
   not supported by the original windows-only tool (MacOS, Linux, etc).
 
-        Netgear Router - Console Telnet Enable Utility 
+        Netgear Router - Console Telnet Enable Utility
         Release 0.1 : 25th June 2006
         Copyright (C) 2006, yoshac @ member.fsf.org
         Release 0.2 : 20th August 2012
@@ -31,7 +31,7 @@
 
 
   The RSA MD5 and Blowfish implementations are provided under LGPL from
-  http://www.opentom.org/Mkttimage 
+  http://www.opentom.org/Mkttimage
 */
 
 #include <netinet/tcp.h>
@@ -133,7 +133,7 @@ int fill_payload(int argc, char * input[])
   char MD5_key[0x10];
   char secret_key[0x400]="AMBIT_TELNET_ENABLE+";
   int encoded_len;
-        
+
   memset(&payload, 0, sizeof(payload));
   // NOTE: struct has .mac behind .signature and is filled here
   strcpy(payload.mac, input[2]);
@@ -157,15 +157,15 @@ int fill_payload(int argc, char * input[])
   //  strcat(payload.signature, input[2]);
 
   if (argc==5)
-    strcat(secret_key,input[4]);
+    strncat(secret_key,input[4],sizeof(secret_key) - strlen(secret_key) - 1);
 
   Blowfish_Init(&ctx,secret_key,strlen(secret_key));
 
   encoded_len = EncodeString(&ctx,(char*)&payload,(char*)&output_buf,0x80);
-        
+
   return encoded_len;
 }
-        
+
 int PORT = 23;
 
 int main(int argc, char * argv[])
@@ -176,15 +176,11 @@ int main(int argc, char * argv[])
 
   if (argc!=5)
     usage(argv[0]);
-        
+
   datasize = fill_payload(argc, argv);
 
   int sock = socket_connect(argv[1],PORT);
-
-  for (i=0;i<datasize;i++) {
-    //printf("%c",output_buf[i]);
-    write(sock, &output_buf[i], 1);
-  }
+  write(sock, output_buf, datasize);
   close(sock);
 
   return 0;
