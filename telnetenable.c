@@ -13,7 +13,10 @@
         Release 0.1 : 25th June 2006
         Copyright (C) 2006, yoshac @ member.fsf.org
         Release 0.2 : 20th August 2012
-	dj bug fix on OS X
+        dj bug fix on OS X
+        Release 0.3 : 8th October 2012
+        keithr-git bug fix to send entire packet in one write() call,
+          strcpy->strncpy, clean up some whitespace
 
         This program is free software; you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -62,7 +65,7 @@ struct PAYLOAD
 
 void usage(char * progname)
 {
-  printf("\nVersion:0.2, 2012/08/20\n");
+  printf("\nVersion:0.3, 2012/10/08\n");
   printf("Usage:\n%s <host ip> <host mac> <user name> <password>\n\n",progname);
   exit(-1);
 }
@@ -116,7 +119,7 @@ int EncodeString(BLOWFISH_CTX *ctx,char *pInput,char *pOutput, int lSize)
       char *pi=pInput;
       char *po=pOutput;
       for (i=0;i<8;i++)
-	*po++=*pi++;
+        *po++=*pi++;
       Blowfish_Encrypt(ctx,(uint32_t *)pOutput,(uint32_t *)(pOutput+4));
       pInput+=8;
       pOutput+=8;
